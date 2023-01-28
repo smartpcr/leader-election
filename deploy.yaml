@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: leaderelection
+  name: leaderelection
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: leaderelection
+  template:
+    metadata:
+      labels:
+        app: leaderelection
+    spec:
+      automountServiceAccountToken: true
+      containers:
+        - image: docker.io/smartpcr/leaderelection:202301281312
+          name: leaderelection
+          args:
+            - --lease-name=my-lease
+          env:
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: metadata.name
